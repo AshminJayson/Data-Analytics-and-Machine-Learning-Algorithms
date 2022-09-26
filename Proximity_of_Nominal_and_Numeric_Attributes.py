@@ -25,15 +25,8 @@ num_attributes = list(map(str, input().strip().split()))
 
 #Find dissimilarity matrix of nominal attributes
 
-disnom = []
-disnum = []
-
-for i in range(number_of_val):
-    temp = []
-    for j in range(number_of_val):
-        temp.append(0)
-    disnom.append(temp)
-    disnum.append(temp)
+disnom = [[0 for x in range(number_of_val)] for x in range(number_of_val)]
+disnum = [[0 for x in range(number_of_val)] for x in range(number_of_val)]
 
 for i in range(number_of_val):
     for j in range(i):
