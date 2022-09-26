@@ -23,7 +23,7 @@ nom_attributes = list(map(str, input().strip().split()))
 print("Enter the numeric attributes : ")
 num_attributes = list(map(str, input().strip().split()))
 
-#Find dissimilarity matrix of nominal attributes
+#Find dissimilarity matrix of nominal and numeric attributes
 
 disnom = [[0 for x in range(number_of_val)] for x in range(number_of_val)]
 disnum = [[0 for x in range(number_of_val)] for x in range(number_of_val)]
