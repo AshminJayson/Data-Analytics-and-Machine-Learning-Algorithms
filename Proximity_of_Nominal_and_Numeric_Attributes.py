@@ -17,7 +17,6 @@ for i in values:
         data[keys[k]].append(j)
         k = k + 1
 
-number_of_val = number_of_val - 1
 
 print("Enter the nominal attributes : ")
 nom_attributes = list(map(str, input().strip().split()))

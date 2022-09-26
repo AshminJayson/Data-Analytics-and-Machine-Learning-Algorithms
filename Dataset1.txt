@@ -6,4 +6,3 @@ Volkswagen Ameo Blue 1100000 Sedan 20.0 160
 Volkswagen Tiguan Yellow 1600000 Suv 18.0 150
 Suzuki Swift Red 800000 HatchBack 16.0 170
 Ford Ecosport Red 1200000 Suv 17.2 140
-
