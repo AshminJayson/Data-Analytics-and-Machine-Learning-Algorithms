@@ -30,7 +30,8 @@ num_attr = list(map(str, input().strip().split()))
 
 #Find dissimilarity matrix of nominal and numeric attributes
 
-disnom = disnum = [[0 for x in range(number_of_vals)] for x in range(number_of_vals)]
+disnom = [[0 for x in range(number_of_vals)] for x in range(number_of_vals)]
+disnum = [[0 for x in range(number_of_vals)] for x in range(number_of_vals)]
 
 
 for i in range(number_of_vals):
