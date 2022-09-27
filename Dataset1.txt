@@ -1,4 +1,4 @@
-Manufacturer CarName Color Price Type FuelConsumption(inkm/l) HorsePower(inbhp) 
+Manufacturer Carname Color Price Type Fuelconsumption Horsepower
 Ford FreeStyle Black 1000000 HatchBack 20.2 150
 Suzuki Brezza Red 800000 Suv 21.0 150
 Volkswagen Polo Red 1200000 HatchBack 18.0 180
