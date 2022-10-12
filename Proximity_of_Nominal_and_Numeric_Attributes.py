@@ -1,7 +1,7 @@
 
 def printer(mat, number_of_vals):
     for i in range(number_of_vals):
-        for j in range(i):
+        for j in range(i + 1):
             print("{0:.2f}".format(mat[i][j]), end = ' ')
         print(" ")
 
@@ -35,7 +35,7 @@ disnum = [[0 for x in range(number_of_vals)] for x in range(number_of_vals)]
 
 
 for i in range(number_of_vals):
-    for j in range(i):
+    for j in range(i + 1):
         m = 0
         e_dist = 0
         for k in nom_attr:
