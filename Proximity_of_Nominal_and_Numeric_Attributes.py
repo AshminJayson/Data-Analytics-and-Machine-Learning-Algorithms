@@ -43,7 +43,7 @@ for i in range(number_of_vals):
                 m = m + 1
         for k in num_attr:
             e_dist = e_dist + ((float(data[k][i]) - float(data[k][j])) ** 2)
-        disnom[i][j] = (len(nom_attr) - m) / len(nom_attr)
+        disnom[i][j] = (len(nom_attr) + len(num_attr) - m) / len(nom_attr)
         disnum[i][j] = e_dist ** 0.5
 
 printer(disnom, number_of_vals)
