@@ -1,0 +1,8 @@
+Manufacturer Carname Color Price Type Fuelconsumption Horsepower
+Ford FreeStyle Black 1000 HatchBack 20.2 150
+Suzuki Brezza Red 8000 Suv 21.0 150
+Volkswagen Polo Red 1200 HatchBack 18.0 180
+Volkswagen Ameo Blue 1100 Sedan 20.0 160
+Volkswagen Tiguan Yellow 1600 Suv 18.0 150
+Suzuki Swift Red 800 HatchBack 16.0 170
+Ford Ecosport Red 1200 Suv 17.2 140
