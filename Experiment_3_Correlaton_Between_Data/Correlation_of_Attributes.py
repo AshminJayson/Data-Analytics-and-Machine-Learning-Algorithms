@@ -1,3 +1,5 @@
+#Not completed
+
 print("Enter the number of numeric values") 
 
 n = int(input("Enter the number of data points : "))
