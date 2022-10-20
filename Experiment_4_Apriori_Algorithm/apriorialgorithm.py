@@ -14,6 +14,7 @@ for i in range(n):
 		if [j] not in items :  
 			items.append([j])
 	
+items.sort()
 
 min_sup = int(input("Enter the minimum support threshold value : "))
 
