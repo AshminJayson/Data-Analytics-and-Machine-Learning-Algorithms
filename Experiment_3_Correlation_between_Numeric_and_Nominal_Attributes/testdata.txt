@@ -1,0 +1,19 @@
+Pearson moment coefficient for numeric attributes
+Enter the number of data points : 5
+Enter the data point : 10 20 
+Enter the data point : 30 40
+Enter the data point : 12 45
+Enter the data point : 6 15
+Enter the data point : 17 35
+The correlation coefficient is :  0.6248915213043986
+Chi-Square test for nominal attributes
+Input the contingency table : 
+50
+100
+75
+40
+Input the chi-square table value at required level of significance : 10.7
+The required contingency table is :  [[50, 100, 150], [75, 40, 115], [125, 140, 265]]
+The calcuated chi-square value is :  26.554865424430645
+The null hyphothesis can be rejected and the data is dependent
+
