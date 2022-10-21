@@ -1,0 +1,93 @@
+#Experiment No : 4
+#Date : 21/10/22
+#Aim : Program to implement Apriori Algorithm
+#Ashmin Jayson S5 DS ROll No : 14
+
+data = []
+
+attr1 = "Transaction ID"
+attr2 = "List of items"
+
+n = int(input("Enter the number of transactions : "))
+
+items = []
+for i in range(n):
+	at1 = input("Enter the transaction ID : ")
+	at2 = list(map(str, input("Enter the list of items associated with the given transaction ID : ").split(" ")))
+	
+	data.append([at1] + at2)
+	for j in at2:
+		if [j] not in items:
+			items.append([j])
+	
+
+items.sort()
+min_sup = int(input("Enter the minimum support value : "))
+
+for i, j in enumerate(items):
+	for k, l in enumerate(items):
+		if k > i and len(j) == len(l):
+			flag = 1
+			for m in range(len(j) - 1):
+				if j[m] != l[m]:
+					flag = 0
+					break
+			if flag == 1:
+				temp = []
+				temp.extend(j)
+				temp.append(l[len(l) - 1])
+				if temp not in items:
+					items.append(temp)
+
+satissets = []
+max_l = 0
+
+for i in items:
+	count = 0
+	for df in data:
+		flag1 = 1
+		for k in i :
+			flag2 = 1
+			for l in df:
+				if k == l:
+					flag2 = 0
+			if flag2 == 1:
+				flag1 = 0
+				break
+				
+		if flag1 == 1:
+			count += 1
+		
+	if count >= min_sup:
+		max_l = max(max_l, len(i))
+		satissets.append(i)
+
+for i in range(max_l):
+	print("The {i} frequent item set is : {j}".format(i = i + 1, j = [l for l in satissets if len(l) == i + 1]))
+	
+Output
+------
+Enter the number of transactions : 9
+Enter the transaction ID : t1
+Enter the list of items associated with the given transaction ID : l1 l2 l5
+Enter the transaction ID : t2
+Enter the list of items associated with the given transaction ID : l2 l4
+Enter the transaction ID : t3
+Enter the list of items associated with the given transaction ID : l2 l3
+Enter the transaction ID : t4
+Enter the list of items associated with the given transaction ID : l1 l2 l4
+Enter the transaction ID : t5
+Enter the list of items associated with the given transaction ID : l1 l3
+Enter the transaction ID : t6
+Enter the list of items associated with the given transaction ID : l2 l3
+Enter the transaction ID : t7
+Enter the list of items associated with the given transaction ID : l1 l3
+Enter the transaction ID : t8
+Enter the list of items associated with the given transaction ID : l1 l2 l3 l5
+Enter the transaction ID : t9
+Enter the list of items associated with the given transaction ID : l1 l2 l3
+Enter the minimum support value : 2
+The 1 frequent item set is : [['l1'], ['l2'], ['l3'], ['l4'], ['l5']]
+The 2 frequent item set is : [['l1', 'l2'], ['l1', 'l3'], ['l1', 'l5'], ['l2', 'l3'], ['l2', 'l4'], ['l2', 'l5']]
+The 3 frequent item set is : [['l1', 'l2', 'l3'], ['l1', 'l2', 'l5']]
+	
