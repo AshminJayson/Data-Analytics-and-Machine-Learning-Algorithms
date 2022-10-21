@@ -1,0 +1,95 @@
+#Experiment No : 2
+#Date : 07/10/22
+#Aim : Program to find the promixity measure of dissimilarity between numeric and nominal attributes 
+#Ashmin Jayson S5 DS ROll No : 14
+
+
+def printer(mat, number_of_vals):
+	for i in range(number_of_vals):
+	        for j in range(i + 1):
+	        	print("{0:.2f}".format(mat[i][j]), end = ' ')
+        	print(" ")
+
+f = open('./cardata.txt', 'r')
+typ = open('./attributetypes.txt', 'r')
+
+data = {}
+features = f.readline()
+for i in features.strip().split():
+	data[i] = []
+
+keys = list(data.keys())
+
+values = f.readlines()
+number_of_vals = len(values)
+for i in values:
+    	k = 0
+    	for j in i.split():
+        	data[keys[k]].append(j)
+        	k = k + 1
+
+print("The data set is : ", data)
+nom_attr = typ.readline().split()
+num_attr = typ.readline().split()
+print("The nominal attributes are : ", nom_attr,"\nThe numeric attributes are : ",  num_attr,"\n")
+#Find dissimilarity matrix of nominal and numeric attributes
+
+disnom = [[0 for x in range(number_of_vals)] for x in range(number_of_vals)]
+disnum = [[0 for x in range(number_of_vals)] for x in range(number_of_vals)]
+
+
+for i in range(number_of_vals):
+	for j in range(i + 1):
+		m = 0
+		e_dist = 0
+		for k in nom_attr:
+			if data[k][i] == data[k][j] : 
+				m += 1
+		for k in num_attr:
+	        	e_dist = e_dist + ((float(data[k][i]) - float(data[k][j])) ** 2)
+	      
+		disnom[i][j] = (len(nom_attr) - m) / len(nom_attr)
+		disnum[i][j] = e_dist ** 0.5
+
+print("Dissimilarity matrix for Nominal Attributes")
+printer(disnom, number_of_vals)
+print()
+print("Dissimilarity matrix for Numeric Attributes")
+printer(disnum, number_of_vals)
+print()
+
+f.close()
+typ.close()
+
+i, j = map(int, input("Input the indices of data points to find similarity of : ").split())
+print("The similarity of the two data points is : ", 1 - disnom[i][j] if j < i else 1 - disnom[j][i])
+
+
+Output
+------
+The data set is :  {'Manufacturer': ['Ford', 'Suzuki', 'Volkswagen', 'Volkswagen', 'Volkswagen', 'Suzuki', 'Ford'], 'Carname': ['FreeStyle', 'Brezza', 'Polo', 'Ameo', 'Tiguan', 'Swift', 'Ecosport'], 'Color': ['Black', 'Red', 'Red', 'Blue', 'Yellow', 'Red', 'Red'], 'Price': ['1000', '8000', '1200', '1100', '1600', '800', '1200'], 'Type': ['HatchBack', 'Suv', 'HatchBack', 'Sedan', 'Suv', 'HatchBack', 'Suv'], 'Fuelconsumption': ['20.2', '21.0', '18.0', '20.0', '18.0', '16.0', '17.2'], 'Horsepower': ['150', '150', '180', '160', '150', '170', '140']}
+The nominal attributes are :  ['Manufacturer', 'Carname', 'Color', 'Type'] 
+The numeric attributes are :  ['Price', 'Fuelconsumption', 'Horsepower'] 
+
+Dissimilarity matrix for Nominal Attributes
+0.00  
+1.00 0.00  
+0.75 0.75 0.00  
+1.00 1.00 0.75 0.00  
+1.00 0.75 0.75 0.75 0.00  
+0.75 0.50 0.50 1.00 1.00 0.00  
+0.75 0.50 0.75 1.00 0.75 0.75 0.00  
+
+Dissimilarity matrix for Numeric Attributes
+0.00  
+7000.00 0.00  
+202.25 6800.07 0.00  
+100.50 6900.01 102.00 0.00  
+600.00 6400.00 401.12 500.10 0.00  
+201.04 7200.03 400.13 300.19 800.25 0.00  
+200.27 6800.01 40.01 102.02 400.13 401.13 0.00  
+
+Input the indices of data points to find similarity of : 2 3
+The similarity of the two data points is :  0.25
+
+
