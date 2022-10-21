@@ -1,0 +1,88 @@
+#Experiment No : 3
+#Date : 14/10/22
+#Aim : Program to find the correlation between numeric and nominal attributes 
+#Ashmin Jayson S5 DS ROll No : 14
+
+print("Pearson moment coefficient for numeric attributes")
+
+n = int(input("Enter the number of data points : "))
+
+data = []
+
+suma, sumb, meana, meanb, prodab, vara, varb = 0, 0, 0, 0, 0, 0, 0
+
+for i in range(n):
+	temp = list(map(int, input("Enter the data point : ").split()))
+	data.append(temp)
+	suma += temp[0]
+	sumb += temp[1]
+	
+meana = suma / n
+meanb = sumb / n
+
+for i in range(n):
+	vara += (data[i][0] - meana) ** 2
+	varb += (data[i][1] - meanb) ** 2
+	prodab += (data[i][0] - meana) * (data[i][1] - meanb)
+	
+vara /= n
+varb /= n
+sda = vara ** 0.5
+sdb = varb ** 0.5
+
+corrcoff = prodab / (n * sda * sdb)
+
+print("The correlation coefficient is : ", corrcoff)
+	
+	
+print("Chi-Square test for nominal attributes")
+
+ct = [[0 for i in range(3)] for j in range(3)]
+print("Input the contingency table : ")
+for i in range(2):
+	for j in range(2):
+		ct[i][j] = int(input())
+tbchis = float(input("Input the chi-square table value at required level of significance : "))
+ct[0][2] = ct[0][0] + ct[0][1]
+ct[1][2] = ct[1][0] + ct[1][1]
+ct[2][0] = ct[0][0] + ct[1][0]
+ct[2][1] = ct[0][1] + ct[1][1]
+ct[2][2] = ct[2][0] + ct[2][1]
+
+
+print("The required contingency table is : ", ct)
+chis = 0
+for i in range(2):
+	for j in range(2):
+		ex = (ct[i][2] * ct[2][j]) / ct[2][2]
+		chis += ((ct[i][j] - ex) ** 2) / ex
+
+print("The calcuated chi-square value is : ", chis)
+
+if chis > tbchis:
+	print("The null hyphothesis can be rejected and the data is dependent")
+else:
+	print("The null hyphothesis cannot be rejected")
+	
+Output
+------
+Pearson moment coefficient for numeric attributes
+Enter the number of data points : 5
+Enter the data point : 10 20 
+Enter the data point : 30 40
+Enter the data point : 12 45
+Enter the data point : 6 15
+Enter the data point : 17 35
+The correlation coefficient is :  0.6248915213043986
+Chi-Square test for nominal attributes
+Input the contingency table : 
+50
+100
+75
+40
+Input the chi-square table value at required level of significance : 10.7
+The required contingency table is :  [[50, 100, 150], [75, 40, 115], [125, 140, 265]]
+The calcuated chi-square value is :  26.554865424430645
+The null hyphothesis can be rejected and the data is dependent
+
+
