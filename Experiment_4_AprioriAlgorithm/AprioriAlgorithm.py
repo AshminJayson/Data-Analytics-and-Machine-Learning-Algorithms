@@ -1,3 +1,4 @@
+
 data = []
 
 attr1 = "Transaction ID"
@@ -55,8 +56,31 @@ for i in items:
 		
 	if count >= min_sup:
 		max_l = max(max_l, len(i))
-		satissets.append(i)
+		satissets.append([i, len(i), count])
+		
+ltables = [[] for i in range(max_l)]
 
-for i in range(max_l):
-	print("The {i} frequent item set is : {j}".format(i = i + 1, j = [l for l in satissets if len(l) == i + 1]))
+for item in satissets : 
+	ltables[item[1] - 1].append(item[0] + [item[2]])
+
+print("")
+for i, fsets in enumerate(ltables):
+	x = "L" + str(i + 1)
+	print("{:^50}".format(str(x)))
+	print("--------------------------------------------------")
+	print("|         Itemset          |     Support Count   |")
+	print("--------------------------------------------------")
+	for j in fsets:
+		print("|{:^26}|{:^21}|".format(str(j[:len(j)- 1]), str(j[len(j) - 1])))	
+	print("--------------------------------------------------")
+	print("")
+	
+	
+
+
+
+
+	
+	
+
 	
