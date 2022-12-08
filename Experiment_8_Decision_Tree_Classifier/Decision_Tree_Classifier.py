@@ -1,12 +1,12 @@
 import math
+import copy 
+from tabulate import tabulate
 
 class node:
 
     def __init__(self, dataset, attributelist):
         self.dataset = dataset
-
         self.attributelist = attributelist
-
         self.children = []
 
 
@@ -14,6 +14,7 @@ class node:
 def classifier(root, dataset, attributelist, tableheader):
     classDict = {}
 
+    # print(dataset)
     for i in dataset:
         cValue = i[len(i) - 1]
         if cValue in classDict:
@@ -94,35 +95,57 @@ def classifier(root, dataset, attributelist, tableheader):
             informationgainforattribute += (atrvar[k] / samplecount) * infogaindj
 
 
-        print(informationgainforattribute, "attribute : ", i)
+        # print(informationgainforattribute, "attribute : ", i)
 
         if ebf - informationgainforattribute > mgain:
             mgain = ebf - informationgainforattribute
             splittingattribute = i
     
     print(splittingattribute)
-            
-        
 
-         
+    attributelist.remove(splittingattribute)
+    index = tableheader.index(splittingattribute)
+    # print(index)
+    tableheader.pop(index)
+    atrvar = {}
+    for j in dataset:
+        atrValue = j[index]
+        if atrValue in atrvar:
+            atrvar[atrValue] += 1
+        else:
+            atrvar[atrValue] = 1
 
+    
+    for k in atrvar:
+        datasetPart = []    
+        for l in dataset:
+            if l[index] == k:
+                datasetPart.append(l)
 
+        for i in datasetPart:
+            i.pop(index)
 
-
-
-            
-
-        
-        
-
+        # print(datasetPart,"--------------")
+        tempnode = node(datasetPart, attributelist)
+        root.children.append(tempnode)
+        classifier(tempnode, copy.deepcopy(datasetPart), attributelist, tableheader)
 
     
 
+       
+def printer(treestack):
+
+    while(len(treestack) != 0):
+        curr = treestack.pop(0)
+        if curr == 100:
+            print("next level")
+            continue
+
+        print(tabulate(curr.dataset, tablefmt="grid"))
+        for i in curr.children:
+            treestack.append(i)
+        treestack.append(100)
     
-    
-
-
-
 
 
 
@@ -145,8 +168,13 @@ def main():
     root = node(dataset, attributelist)
     classifier(root, dataset, attributelist, tableheader)
 
-if __name__ == "__main__":
+    treestack = []
+    treestack.append(root)
+    treestack.append(100)
+    printer(treestack)
 
+
+if __name__ == "__main__":
     main()
 
 
