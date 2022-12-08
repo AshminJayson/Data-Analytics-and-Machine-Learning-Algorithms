@@ -1,3 +1,4 @@
+Age Income Student Credit_Rating
 Rid Age Income Student Credit_Rating Class
 1 Youth High No Fair No
 2 Youth High No Excellent No  
