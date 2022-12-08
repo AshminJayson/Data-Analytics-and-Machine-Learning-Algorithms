@@ -1,0 +1,6 @@
+Rid Age Income Student Credit_Rating Class
+1 Youth High No Fair No
+2 Youth High No Excellent No  
+3 Middle_Aged High No Fair Yes
+4 Senior Medium No Fair Yes
+5 Senior Low Yes Fair No
