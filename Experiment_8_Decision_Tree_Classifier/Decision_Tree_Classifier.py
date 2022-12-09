@@ -8,6 +8,7 @@ class node:
         self.dataset = dataset
         self.attributelist = attributelist
         self.children = []
+        self.label = ""
 
 
 
@@ -59,11 +60,8 @@ def classifier(root, dataset, attributelist, tableheader):
 
         for k in atrvar:
 
-            datasetPart = []
+            datasetPart = [l for l in dataset if l[index] == k]
 
-            for l in dataset:
-                if l[index] == k:
-                    datasetPart.append(l)
             # print(datasetPart)
                 
             tclassDict = {}
@@ -117,16 +115,14 @@ def classifier(root, dataset, attributelist, tableheader):
 
     
     for k in atrvar:
-        datasetPart = []    
-        for l in dataset:
-            if l[index] == k:
-                datasetPart.append(l)
+        datasetPart = [l for l in dataset if l[index] == k]    
 
         for i in datasetPart:
             i.pop(index)
 
         # print(datasetPart,"--------------")
         tempnode = node(datasetPart, attributelist)
+        tempnode.label = k
         root.children.append(tempnode)
         classifier(tempnode, copy.deepcopy(datasetPart), attributelist, tableheader)
 
@@ -141,6 +137,7 @@ def printer(treestack):
             print("next level")
             continue
 
+        print(curr.label)
         print(tabulate(curr.dataset, tablefmt="grid"))
         for i in curr.children:
             treestack.append(i)
