@@ -99,7 +99,7 @@ def classifier(root, dataset, attributelist, tableheader):
             mgain = ebf - informationgainforattribute
             splittingattribute = i
     
-    print(splittingattribute)
+    print("splitter:  ",splittingattribute)
 
     attributelist.remove(splittingattribute)
     index = tableheader.index(splittingattribute)
@@ -124,7 +124,7 @@ def classifier(root, dataset, attributelist, tableheader):
         tempnode = node(datasetPart, attributelist)
         tempnode.label = k
         root.children.append(tempnode)
-        classifier(tempnode, copy.deepcopy(datasetPart), attributelist, tableheader)
+        classifier(tempnode, copy.deepcopy(datasetPart), copy.deepcopy(attributelist), copy.deepcopy(tableheader))
 
     
 
