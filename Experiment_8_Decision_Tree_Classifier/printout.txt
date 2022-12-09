@@ -1,3 +1,10 @@
+#Experiment No : 8
+#Date : 01/12/22
+#Aim : Program to implement Decision Tree Classifier
+#Ashmin Jayson S5 DS ROll No : 14
+
+Program Code : 
+
 import math
 import copy 
 from tabulate import tabulate
@@ -176,3 +183,128 @@ if __name__ == "__main__":
     main()
 
 
+Output : 
+
+Splitting Attribute :  No Split
+Split Condition :  No Split
++----+--------+-----+-----------+-----+
+|  1 | High   | No  | Fair      | No  |
++----+--------+-----+-----------+-----+
+|  2 | High   | No  | Excellent | No  |
++----+--------+-----+-----------+-----+
+|  3 | High   | No  | Fair      | Yes |
++----+--------+-----+-----------+-----+
+|  4 | Medium | No  | Fair      | Yes |
++----+--------+-----+-----------+-----+
+|  5 | Low    | Yes | Fair      | No  |
++----+--------+-----+-----------+-----+
+|  6 | Low    | Yes | Excellent | No  |
++----+--------+-----+-----------+-----+
+|  7 | Low    | Yes | Excellent | Yes |
++----+--------+-----+-----------+-----+
+|  8 | Medium | No  | Fair      | No  |
++----+--------+-----+-----------+-----+
+|  9 | Low    | Yes | Fair      | Yes |
++----+--------+-----+-----------+-----+
+| 10 | Medium | Yes | Fair      | Yes |
++----+--------+-----+-----------+-----+
+| 11 | Medium | Yes | Excellent | Yes |
++----+--------+-----+-----------+-----+
+| 12 | Medium | No  | Excellent | Yes |
++----+--------+-----+-----------+-----+
+| 13 | High   | Yes | Fair      | Yes |
++----+--------+-----+-----------+-----+
+| 14 | Medium | No  | Excellent | No  |
++----+--------+-----+-----------+-----+
+next level
+Splitting Attribute :  Age
+Split Condition :  Youth
++----+--------+-----+-----------+-----+
+|  1 | High   | No  | Fair      | No  |
++----+--------+-----+-----------+-----+
+|  2 | High   | No  | Excellent | No  |
++----+--------+-----+-----------+-----+
+|  8 | Medium | No  | Fair      | No  |
++----+--------+-----+-----------+-----+
+|  9 | Low    | Yes | Fair      | Yes |
++----+--------+-----+-----------+-----+
+| 11 | Medium | Yes | Excellent | Yes |
++----+--------+-----+-----------+-----+
+Splitting Attribute :  Age
+Split Condition :  Middle_Aged
++----+--------+-----+-----------+-----+
+|  3 | High   | No  | Fair      | Yes |
++----+--------+-----+-----------+-----+
+|  7 | Low    | Yes | Excellent | Yes |
++----+--------+-----+-----------+-----+
+| 12 | Medium | No  | Excellent | Yes |
++----+--------+-----+-----------+-----+
+| 13 | High   | Yes | Fair      | Yes |
++----+--------+-----+-----------+-----+
+Splitting Attribute :  Age
+Split Condition :  Senior
++----+--------+-----+-----------+-----+
+|  4 | Medium | No  | Fair      | Yes |
++----+--------+-----+-----------+-----+
+|  5 | Low    | Yes | Fair      | No  |
++----+--------+-----+-----------+-----+
+|  6 | Low    | Yes | Excellent | No  |
++----+--------+-----+-----------+-----+
+| 10 | Medium | Yes | Fair      | Yes |
++----+--------+-----+-----------+-----+
+| 14 | Medium | No  | Excellent | No  |
++----+--------+-----+-----------+-----+
+next level
+Splitting Attribute :  Student
+Split Condition :  No
++---+--------+-----------+----+
+| 1 | High   | Fair      | No |
++---+--------+-----------+----+
+| 2 | High   | Excellent | No |
++---+--------+-----------+----+
+| 8 | Medium | Fair      | No |
++---+--------+-----------+----+
+Splitting Attribute :  Student
+Split Condition :  Yes
++----+--------+-----------+-----+
+|  9 | Low    | Fair      | Yes |
++----+--------+-----------+-----+
+| 11 | Medium | Excellent | Yes |
++----+--------+-----------+-----+
+next level
+next level
+Splitting Attribute :  Income
+Split Condition :  Medium
++----+-----+-----------+-----+
+|  4 | No  | Fair      | Yes |
++----+-----+-----------+-----+
+| 10 | Yes | Fair      | Yes |
++----+-----+-----------+-----+
+| 14 | No  | Excellent | No  |
++----+-----+-----------+-----+
+Splitting Attribute :  Income
+Split Condition :  Low
++---+-----+-----------+----+
+| 5 | Yes | Fair      | No |
++---+-----+-----------+----+
+| 6 | Yes | Excellent | No |
++---+-----+-----------+----+
+next level
+next level
+next level
+Splitting Attribute :  Credit_Rating
+Split Condition :  Fair
++----+-----+-----+
+|  4 | No  | Yes |
++----+-----+-----+
+| 10 | Yes | Yes |
++----+-----+-----+
+Splitting Attribute :  Credit_Rating
+Split Condition :  Excellent
++----+----+----+
+| 14 | No | No |
++----+----+----+
+next level
+next level
+next level
+next level
