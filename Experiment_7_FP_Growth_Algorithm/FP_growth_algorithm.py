@@ -1,226 +1,191 @@
+from tabulate import tabulate
+from itertools import combinations
+
 class node:
-    def __init__(self, word, word_count=0, parent=None, link=None):
-        self.word=word
-        self.word_count=word_count
-        self.parent=parent
-        self.link=link
-        self.children={}
+    def __init__(self, value, parent):
+        self.value = value
+        self.parent = parent
+        self.count = 1
+        self.children = []
+        self.prefixstr = ""
 
-#tree traversal
-    def visittree(self):
-#        if self is None:
-#            return None
-        output=[]
-        output.append(str(vocabdic[self.word]) + " " +str(self.word_count))
-        if len(list(self.children.keys()))>0:
-            for i in (list(self.children.keys())):
-                output.append(self.children[i].visittree())
-        return output
-  
-              
-'''      Build FPTREE class and method       '''        
-class fptree:
-    def __init__(self, data, minsup=400):
-        #raw data and minminual support
-        self.data=data
-        self.minsup=minsup
+
+def createFPTree(root, data, i=0):
+
+    if i == len(data):
+        return
+
+    for child in root.children:
+        if data[i] == child.value:
+            child.count += 1
+            createFPTree(child, data, i+1)
+            return
+
+    temp = node(data[i], root)
+    if root.value == 'null':
+        temp.prefixstr = ''
+    elif root.prefixstr == '':
+        temp.prefixstr = root.value
+    else:
+        temp.prefixstr = root.prefixstr + ',' + root.value
+
+    root.children.append(temp)
+    createFPTree(temp, data, i+1)
+
+
+def printTree(root, markerStr="+- ", levelMarkers=[]):
+
+    # Credits to : https://simonhessner.de/python-3-recursively-print-structured-tree-including-hierarchy-markers-using-depth-first-search/ for this function
+
+    emptyStr = " "*len(markerStr)
+    
+    connectionStr = "|" + emptyStr[:-1]
+
+    level = len(levelMarkers) 
+
+    mapper = lambda draw: connectionStr if draw else emptyStr
+    markers = "".join(map(mapper, levelMarkers[:-1]))
+    markers += markerStr if level > 0 else ""
+    print(f"{markers}{root.value}{':'}{root.count}")
+    # print(f"{markers}{root.value}{':'}{root.count}{'->'}{root.prefixstr}")
+
+
+    for i, child in enumerate(root.children):
+        isLast = i == len(root.children) - 1
+        printTree(child, markerStr, [*levelMarkers, not isLast])
+
+
+
+
+
+def miningConditionalPatternBase(root, FPTable):
+    if root == None:
+        return
+    
+    noOfChildren = len(root.children)
+
+    
+    for i in range(noOfChildren - 1):
+        miningConditionalPatternBase(root.children[i], FPTable)
+
+    flag = 0
+    for itemdata in FPTable:
+        if itemdata[0] == root.value:
+            itemdata[1].append(root.prefixstr + ':' + str(root.count))
+            flag = 1
+
+    if flag == 0 and root.value != 'null':
+        FPTable.append([root.value, [root.prefixstr + ':' + str(root.count)], [], []])
+
+    if noOfChildren > 0:
+        miningConditionalPatternBase(root.children[noOfChildren - 1], FPTable)
+
+
+
+
+def miningConditionalFPTree(FPTable, min_sup):
+    for row in FPTable:
+        if row[0] == 'Item':
+            continue
         
-        #null root
-        self.root= node(word="Null", word_count=1)
-        
-        #each line of transaction with new order from the most frequent items to less
-        self.wordlinesort=[]
-        #node table containing link of all nodes of same word
-        self.nodetable=[]
-        #dictionary contaiing word more than the minsupport count with des order
-        self.wordsortdic=[]
-       
-        #dictionaly containing word and the support count        
-        self.worddic={}
-        #dictionary with word and it's postion of the support count rank
-        self.wordorderdic={}
-#        
-#        self.preprocess(data)
-#        #first scan to build all the necessay dictionary
-        self.construct(data)
-        #second scan and build fp tree line  by line            
-    def construct(self, data):
-                #get support count for all word
-        for tran in data:
-            for words in tran:
-                if words in self.worddic.keys():
-                    self.worddic[words]+=1
+        conditionFPTree = {}    
+        for base in row[1]:
+            firstsplit = base.split(':')
+            secondsplit = firstsplit[0].split(',')
+            
+            for item in secondsplit:
+                if item in conditionFPTree:
+                    conditionFPTree[item] += int(firstsplit[1])
                 else:
-                    self.worddic[words]=1
-        wordlist = list(self.worddic.keys())
-        #prune all the world with < min support count
-        for word in wordlist:
-            if(self.worddic[word]<self.minsup):
-                del self.worddic[word]
-        #sort the remaing items des, with first word count than work#id        
-        self.wordsortdic = sorted(self.worddic.items(), key=lambda x: (-x[1],x[0])) 
-        #create a table containing word, wordcount and all link node of that word
-        t=0
-        for i in self.wordsortdic:
-            word = i[0]
-            wordc = i[1]
-            self.wordorderdic[word]=t
-            t+=1
-            wordinfo = {'wordn':word, 'wordcc':wordc, 'linknode': None}
-            self.nodetable.append(wordinfo)
-        #construct fptree line by line
-    
-        for line in data:
-            supword=[]
-            for word in line:
-                #only keep words with support count higher than minsupport
-                if word in self.worddic.keys():
-                    supword.append(word)
-           #insert words to the fp tree
-            if len(supword)>0:
-                #reorder the words 
-                sortsupword = sorted(supword, key = lambda k: self.wordorderdic[k])
-                self.wordlinesort.append(sortsupword)
-                #enter the word one by one from begining
-                R = self.root
-#                print(sortsupword)
-                for i in sortsupword:                  
-                    if i in R.children.keys():
-                        R.children[i].word_count +=1
-                        R=R.children[i]
-                    else:
+                    conditionFPTree[item] = int(firstsplit[1])
 
-                        R.children[i] = node(word=i,word_count=1,parent=R,link=None)
-                        R=R.children[i]
-                        # link this node to nodetable
-                        for wordinfo in self.nodetable:
-                            if wordinfo["wordn"] == R.word:
-                                # find the last node of the  node linklist
-                                if wordinfo["linknode"] is None:
-                                    wordinfo["linknode"] = R
-                                else:
-                                    iter_node = wordinfo["linknode"]
-                                    while(iter_node.link is not None):
-                                        iter_node = iter_node.link
-                                    iter_node.link = R
+        for key in conditionFPTree.copy():
+            if conditionFPTree[key] < min_sup:
+                conditionFPTree.pop(key)
 
-# create transactions for conditinal tree   
-    def condtreetran(self,N):
-        if N.parent is None:
-            return None
+        row[2] = conditionFPTree
         
-        condtreeline =[]
-        #starting from the leaf node reverse add word till hit root
-        while N is not None:
-            line=[]
-            PN = N.parent
-            while PN.parent is not None:
-                line.append(PN.word)
-                PN=PN.parent
-            #reverse order the transaction
-            line = line[::-1]
-            for i in range(N.word_count):
-                condtreeline.append(line)   
-            #move on to next linknode
-            N=N.link
-        return condtreeline
+
+
+
+def generateFrequentPatterns(FPTable):
+    for row in FPTable:
+        if row[0] == 'Item':
+            continue
+        Fpatterns = {}
+        for length in range(1,len(row[2]) + 1):
+            for x in combinations(row[2], length):
+                minval = 1000000
+                # print(list(x))
+                key = ''
+                for y in list(x):
+                    if row[2][y] < minval:
+                        minval = row[2][y]
+                    key += y
+                Fpatterns[key + row[0]] = minval
+
+        row[3] = Fpatterns
+            
+        
+
+
+
+def main(): 
+
+    #Reading data from dataset
+    transactions = {}
+
+    f = open('./dataset.txt', 'r')
+    lines = f.readlines()
+
+    for line in lines:
+        data = line.strip().split(' ')
+        transactions[data[0]] = data[1:]
+
+
+    #Counting one item frequent sets
+    c1 = {}
+    for key in transactions:
+        transactions[key] = sorted(list(set(transactions[key])))
+        for item in transactions[key]:
+            if item in c1:
+                c1[item] += 1
+            else: 
+                c1[item] = 1
+
+    min_sup = int(input("Enter the minimum support value : "))
+    #Sorting each transaction based on c1
+    for key in transactions:
+        transactions[key] = sorted(transactions[key], key = lambda x : c1[x], reverse=True)
+        transactions[key] = [i for i in transactions[key] if c1[i] >= min_sup]
+
+    print("\n\nDataset")
+    print(tabulate(transactions, headers=transactions.keys(), tablefmt='outline'))
+    c1list = list(c1.items())
+    c1list.insert(0, ('Item', 'Sup_count'))
+    print("\n\n Frequency Table")
+    print(tabulate(c1list, headers="firstrow", tablefmt='outline'))
+    root = node('null', None)
+
+
+    #Create and print FP Tree
+    for key in transactions:
+        createFPTree(root, transactions[key])
     
-#Find frequent word list by creating conditional tree
-    def findfqt(self,parentnode=None):
-        if len(list(self.root.children.keys()))==0:
-            return None
-        result=[]
-        sup=self.minsup
-        #starting from the end of nodetable
-        revtable = self.nodetable[::-1]
-        for n in revtable:
-            fqset=[set(),0]
-            if(parentnode==None):      
-                fqset[0]={n['wordn'],}
-            else:
-                fqset[0] = {n['wordn']}.union(parentnode[0])
-            fqset[1]=n['wordcc']
-            result.append(fqset)
-            condtran = self.condtreetran(n['linknode'])
-            #recursively build the conditinal fp tree
-            contree= fptree(condtran,sup)
-            conwords = contree.findfqt(fqset)
-            if conwords is not None:
-                for words in conwords:
-                    result.append(words)
-        return result
+    print("\n--------------------> FP TREE <--------------------")
+    printTree(root)
 
-#check if tree hight is larger than 1 
-    def checkheight(self):
-        if len(list(self.root.children.keys()))==0:
-            return False
-        else:
-            return True
-          
-          
-min_sup=4
+    #Create table and find frequent patterns
+    FPTable = [['Item', 'Conditional Pattern Base', 'Conditional FP Tree', 'Frequent Pattern Generated']]
+    miningConditionalPatternBase(root, FPTable)
+    # print(FPTable)
 
-test_data = [['I1','I2','I5'],
-             ['I2','I4'],
-             ['I2','I3'],
-             ['I1','I2','I4'],
-             ['I1','I3'],
-             ['I2','I3'],
-             ['I1','I3'],
-             ['I1','I2','I3','I5'],
-             ['I1','I2','I3']]
+    miningConditionalFPTree(FPTable, min_sup)
+
+    generateFrequentPatterns(FPTable)
+    print("\n\nPattern Generation Table")
+    print(tabulate(FPTable, headers="firstrow", tablefmt='outline'))
 
 
-
-fp_tree = fptree(test_data, min_sup) #create FP tree on data
-
-print ("\n========== Printing Frequent Word Set on " + " ==========")
-frequentwordset = fp_tree.findfqt() #mining frequent patt
-frequentwordset=sorted(frequentwordset,key = lambda k: -k[1] )
-
-
-#print frequent patt
-for word in frequentwordset:
-    count = (str(word[1])+"\t")
-    words =''
-    for val in word[0]:
-        words+= (str(vocabdic[val])+" ")
-    print(count+words)
-
-
-#print conditional fp tree height >1
-for i in fp_tree.nodetable[::-1]:
-    lines = fp_tree.condtreetran(i['linknode'])
-    condtree = fptree(lines,min_sup)
-    if(condtree.checkheight()):
-        print('Condtional FPTree Root on '+(vocabdic[i['wordn']]))
-        print(condtree.root.visittree())
-
-
-
-# import pandas as pd
-# import numpy as np
-
-# import pyfpgrowth
-
-# df= pd.read_csv(“ transaction_data.csv”)
-# patterns = pyfpgrowth. find_frequent_patterns(transactions, supportcount)
-# rules = pyfpgrowth. generate_association_rules(patterns, confidencethreshold)
-
-# def support_count(rhs):
-#     count = 0
-#     rhs = set(rhs)
-#     for j in df['items']:
-#         j = set(j)
-#         if(rhs.issubset(j)):
-#             count += 1
-#     return count
-
-# rhs_support = []
-# for i in rules_df['Consequent']:
-#     a = support_count(i)
-#     rhs_support.append(a/len(df))
-
-# rules_df['RHS_Support'] = rhs_support
-# rules_df['lift'] = rules_df['Confidence']/rules_df['RHS_Support']
-# rules_df['Conviction'] = (1 - rules_df['RHS_Support'])/(1 - rules_df['Confidence'])
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,7 @@
+Income Student Credit_Rating
+Rid Income Student Credit_Rating Class
+4 Medium No Fair Yes
+5 Low Yes Fair No
+6 Low Yes Excellent No
+10 Medium Yes Fair Yes
+14 Medium No Excellent No

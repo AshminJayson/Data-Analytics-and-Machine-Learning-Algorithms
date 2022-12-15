@@ -1,0 +1,5 @@
+T1 E K M N O Y
+T2 D E K N O Y
+T3 A E K M
+T4 C K M U Y
+T5 C E I K O 
