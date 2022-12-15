@@ -70,11 +70,11 @@ def miningConditionalPatternBase(root, FPTable):
 
     flag = 0
     for itemdata in FPTable:
-        if itemdata[0] == root.value:
+        if itemdata[0] == root.value and root.prefixstr != '':
             itemdata[1].append(root.prefixstr + ':' + str(root.count))
             flag = 1
 
-    if flag == 0 and root.value != 'null':
+    if flag == 0 and root.value != 'null' and root.prefixstr != '':
         FPTable.append([root.value, [root.prefixstr + ':' + str(root.count)], [], []])
 
     if noOfChildren > 0:
