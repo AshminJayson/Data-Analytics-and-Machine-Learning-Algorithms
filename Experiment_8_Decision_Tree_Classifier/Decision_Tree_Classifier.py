@@ -97,8 +97,7 @@ def classifier(root, dataset, attributelist, tableheader):
         print(upper,'\n\n',lower)
         tempnode1 = node(upper, attributelist, tableheader, splittingattribute, '<=' + str(fixmean))
         tempnode2 = node(lower, attributelist, tableheader, splittingattribute, '>' + str(fixmean))
-        root.children.append(tempnode1)
-        root.children.append(tempnode2)
+        root.children.extend([tempnode1, tempnode2])
         classifier(tempnode1, copy.deepcopy(upper), copy.deepcopy(attributelist), copy.deepcopy(tableheader))
         classifier(tempnode2, copy.deepcopy(lower), copy.deepcopy(attributelist), copy.deepcopy(tableheader))
         pass
