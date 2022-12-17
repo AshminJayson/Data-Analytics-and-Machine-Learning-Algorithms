@@ -4,7 +4,7 @@ Rid Age Income Student Credit_Rating Class
 2 Youth High No Excellent No  
 3 Middle_Aged High No Fair Yes
 4 Senior Medium No Fair Yes
-5 Senior Low Yes Fair No
+5 Senior Low Yes Fair Yes
 6 Senior Low Yes Excellent No
 7 Middle_Aged Low Yes Excellent Yes
 8 Youth Medium No Fair No
@@ -13,4 +13,4 @@ Rid Age Income Student Credit_Rating Class
 11 Youth Medium Yes Excellent Yes
 12 Middle_Aged Medium No Excellent Yes
 13 Middle_Aged High Yes Fair Yes
-14 Senior Medium No Excellent No
+14 Senior Medium No Excellent Yes

@@ -38,11 +38,9 @@ def printTree(root, markerStr="+- ", levelMarkers=[]):
     # Credits to : https://simonhessner.de/python-3-recursively-print-structured-tree-including-hierarchy-markers-using-depth-first-search/ for this function
 
     emptyStr = " "*len(markerStr)
-    
     connectionStr = "|" + emptyStr[:-1]
-
     level = len(levelMarkers) 
-
+    
     mapper = lambda draw: connectionStr if draw else emptyStr
     markers = "".join(map(mapper, levelMarkers[:-1]))
     markers += markerStr if level > 0 else ""

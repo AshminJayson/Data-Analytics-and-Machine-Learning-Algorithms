@@ -1,129 +1,115 @@
 import math
 import copy 
-from tabulate import tabulate
+from tabulate import tabulate 
+from collections import Counter
 
 class node:
 
-    def __init__(self, dataset, attributelist, splittingAtr, splitCondition):
+    def __init__(self, dataset, attributelist, tableheader, splittingAtr, splitCondition):
         self.dataset = dataset
         self.attributelist = attributelist
+        self.tableheader = tableheader
         self.children = []
         self.splittingAtr = splittingAtr
         self.splitCondition = splitCondition
 
-
-
 def classifier(root, dataset, attributelist, tableheader):
-    classDict = {}
+    
+    classDict = Counter([i[len(dataset[0]) - 1] for i in dataset])
 
-    # print(dataset)
-    for i in dataset:
-        cValue = i[len(i) - 1]
-        if cValue in classDict:
-            classDict[cValue] += 1
-        else:
-            classDict[cValue] = 1
 
-    if len(classDict) == 1 or len(attributelist) == 1:
+    if len(classDict) == 1 or len(attributelist) == 1 or len(dataset) == 0:
         return
 
-    # print(classDict)
-
-
     samplecount = len(dataset)
-    ebf = 0
-    for i in classDict:
-        p = classDict[i] / samplecount
-        ebf += p * math.log(p, 2)
-    ebf *= -1
-
-    # print(ebf)
-
-
+    ebf = sum([classDict[i]/samplecount * math.log(classDict[i]/samplecount, 2) for i in classDict]) * -1
 
     mgain = 0
     splittingattribute = ""
+    fixmean = 0
 
 
-    for i in attributelist:
-        index = tableheader.index(i)
+    for atr in attributelist:
+
+
+        index = tableheader.index(atr)
         informationgainforattribute = 0
-        atrvar = {}
 
-        for j in dataset:
-            atrValue = j[index]
-            if atrValue in atrvar:
-                atrvar[atrValue] += 1
-            else:
-                atrvar[atrValue] = 1
+       
+        if (isinstance(dataset[0][index], (int, float))):
+            dataset.sort(key=lambda x : x[index])
+            mean = 0
+            ifgainSet = 100000000
+            for i in range(len(dataset) - 1):
+                mean = (dataset[i][index] + dataset[i + 1][index]) / 2
+                upper = [i for i in dataset if i[index] <= mean]
+                lower = [i for i in dataset if i[index] > mean]
 
-        # print(atrvar)
+                def rangeeval(sectionSet, sectionDict):
+                    return sum([sectionDict[i]/len(sectionSet) * math.log(sectionDict[i]/len(sectionSet), 2) for i in sectionDict]) * -1
 
-        for k in atrvar:
+                upperDict = Counter([i[len(upper[0]) - 1] for i in upper])
+                lowerDict = Counter([i[len(lower[0]) - 1] for i in lower])
 
-            datasetPart = [l for l in dataset if l[index] == k]
-
-            # print(datasetPart)
                 
-            tclassDict = {}
+                tempgainSet = (len(upper)/len(dataset) * rangeeval(upper, upperDict)) + (len(lower)/len(dataset) * rangeeval(lower, lowerDict))
 
-            for m in datasetPart:
-                tcValue = m[len(m) - 1]
-                if tcValue in tclassDict:
-                    tclassDict[tcValue] += 1
-                else:
-                    tclassDict[tcValue] = 1
-
-            # print(tclassDict)
+                if tempgainSet < ifgainSet:
+                    ifgainSet = tempgainSet
+                    fixmean = mean 
+                
+                
             
-            infogaindj = 0
-            tsamplecount = len(datasetPart)
+            if ebf - ifgainSet > mgain:
+                mgain = ebf - ifgainSet
+                splittingattribute = atr
 
-            # print(tsamplecount)
+        else:
+            atrvar = Counter([i[index] for i in dataset])
+            for k in atrvar:
 
-            for n in tclassDict:
-                # print("----------",tclassDict[i],"->", tsamplecount)
-                p = tclassDict[n] / tsamplecount
-                infogaindj += p * math.log(p, 2)
-                # print(infogaindj)
-            infogaindj *= -1
+                datasetPart = [l for l in dataset if l[index] == k]
+                tclassDict = Counter([i[len(datasetPart[0]) - 1] for i in datasetPart])
 
-            # print(infogaindj)
+                infogaindj = 0
+                tsamplecount = len(datasetPart)
 
-
-            informationgainforattribute += (atrvar[k] / samplecount) * infogaindj
-
+                infogaindj = sum([tclassDict[i]/tsamplecount * math.log(tclassDict[i]/tsamplecount, 2) for i in tclassDict]) * -1
+                informationgainforattribute += (atrvar[k] / samplecount) * infogaindj
 
         # print(informationgainforattribute, "attribute : ", i)
 
-        if ebf - informationgainforattribute > mgain:
-            mgain = ebf - informationgainforattribute
-            splittingattribute = i
+            if ebf - informationgainforattribute > mgain:
+                mgain = ebf - informationgainforattribute
+                splittingattribute = atr
     
-
+    # print(splittingattribute)
     attributelist.remove(splittingattribute)
     index = tableheader.index(splittingattribute)
-    # print(index)
     tableheader.pop(index)
-    atrvar = {}
-    for j in dataset:
-        atrValue = j[index]
-        if atrValue in atrvar:
-            atrvar[atrValue] += 1
-        else:
-            atrvar[atrValue] = 1
-
+    atrvar = Counter(i[index] for i in dataset)
     
-    for k in atrvar:
-        datasetPart = [l for l in dataset if l[index] == k]    
+    if (isinstance(dataset[0][index], (int, float))):
+        print('fxmena', fixmean)
+        upper = [i[:index] + i[index + 1:] for i in dataset if i[index] <= fixmean]
+        lower = [i[:index] + i[index + 1:] for i in dataset if i[index] > fixmean]
 
-        for i in datasetPart:
-            i.pop(index)
+        print(upper,'\n\n',lower)
+        tempnode1 = node(upper, attributelist, tableheader, splittingattribute, '<=' + str(fixmean))
+        tempnode2 = node(lower, attributelist, tableheader, splittingattribute, '>' + str(fixmean))
+        root.children.append(tempnode1)
+        root.children.append(tempnode2)
+        classifier(tempnode1, copy.deepcopy(upper), copy.deepcopy(attributelist), copy.deepcopy(tableheader))
+        classifier(tempnode2, copy.deepcopy(lower), copy.deepcopy(attributelist), copy.deepcopy(tableheader))
+        pass
+    else:
+        for k in atrvar:
+            datasetPart = [l[:index]+l[index+1:] for l in dataset if l[index] == k]    
 
-        # print(datasetPart,"--------------")
-        tempnode = node(datasetPart, attributelist, splittingattribute, k)
-        root.children.append(tempnode)
-        classifier(tempnode, copy.deepcopy(datasetPart), copy.deepcopy(attributelist), copy.deepcopy(tableheader))
+            # print(datasetPart,"--------------")
+            tempnode = node(datasetPart, attributelist, tableheader, splittingattribute, k)
+            root.children.append(tempnode)
+            classifier(tempnode, copy.deepcopy(datasetPart), copy.deepcopy(attributelist), copy.deepcopy(tableheader))
 
     
 
@@ -139,7 +125,7 @@ def printer(treestack):
         
         print("Splitting Attribute : ", curr.splittingAtr)
         print("Split Condition : ", curr.splitCondition)
-        print(tabulate(curr.dataset, tablefmt="grid"))
+        print(tabulate(curr.dataset,headers=curr.tableheader, tablefmt="outline"))
         for i in curr.children:
             treestack.append(i)
         treestack.append(100)
@@ -149,7 +135,8 @@ def printer(treestack):
 
 def main():
 
-    f = open('testdata.txt', 'r')
+    f = open('testdata2.txt', 'r')
+    # f = open('testdata.txt', 'r')
 
 
     attributelist = list(f.readline().strip().split(' '))
@@ -161,9 +148,15 @@ def main():
     for line in lines:
         dataset.append(line.strip().split(' '))
 
-    # print(dataset)
-    # attribute_selection_method = input("Enter the choice of attribute selection method ['information gain', 'gain ratio', 'gini index'] : ")
-    root = node(dataset, attributelist, "No Split", "No Split")
+    for i in dataset:
+        for ind, j in enumerate(i):
+            try:
+                i[ind] = int(i[ind])
+            except:
+                pass
+
+    print(tabulate(dataset,headers=tableheader ,tablefmt='outline'))
+    root = node(dataset, attributelist,tableheader, "No Split", "No Split")
     classifier(root, dataset, attributelist, tableheader)
 
     treestack = []
