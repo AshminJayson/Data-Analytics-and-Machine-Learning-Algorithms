@@ -81,28 +81,53 @@ def miningConditionalPatternBase(root, FPTable):
 
 
 
-def miningConditionalFPTree(FPTable, min_sup):
-    for row in FPTable:
-        if row[0] == 'Item':
-            continue
+def createConditionalFPTree(FPTable, min_sup):
+    # for row in FPTable:
+    #     if row[0] == 'Item':
+    #         continue
         
-        conditionFPTree = {}    
-        for base in row[1]:
+    #     conditionFPTree = {}    
+    #     for base in row[1]:
+    #         firstsplit = base.split(':')
+    #         secondsplit = firstsplit[0].split(',')
+            
+    #         for item in secondsplit:
+    #             if item in conditionFPTree:
+    #                 conditionFPTree[item] += int(firstsplit[1])
+    #             else:
+    #                 conditionFPTree[item] = int(firstsplit[1])
+
+    #     for key in conditionFPTree.copy():
+    #         if conditionFPTree[key] < min_sup:
+    #             conditionFPTree.pop(key)
+
+    #     row[2] = conditionFPTree
+
+    for itemset in FPTable[1:]:
+        conditionalRootNode = node('null', None)
+        for base in itemset[1]:
             firstsplit = base.split(':')
             secondsplit = firstsplit[0].split(',')
-            
-            for item in secondsplit:
-                if item in conditionFPTree:
-                    conditionFPTree[item] += int(firstsplit[1])
-                else:
-                    conditionFPTree[item] = int(firstsplit[1])
+            for i in range(int(firstsplit[1])):
+                createFPTree(conditionalRootNode, secondsplit)
+        printTree(conditionalRootNode)
+        leaflist = []
 
-        for key in conditionFPTree.copy():
-            if conditionFPTree[key] < min_sup:
-                conditionFPTree.pop(key)
 
-        row[2] = conditionFPTree
-        
+def miningConditionalPatternFPTree(root, leaflist):
+    if root == None:
+        return
+    
+    noOfChildren = len(root.children)
+
+    for i in range(noOfChildren - 1):
+        miningConditionalPatternFPTree(root.children[i], leaflist)
+
+    
+
+    if noOfChildren > 0:
+        miningConditionalPatternFPTree(root.children[noOfChildren - 1], leaflist)
+
 
 
 
@@ -176,14 +201,14 @@ def main():
     #Create table and find frequent patterns
     FPTable = [['Item', 'Conditional Pattern Base', 'Conditional FP Tree', 'Frequent Pattern Generated']]
     miningConditionalPatternBase(root, FPTable)
+    FPTable[1:] = sorted(FPTable[1:], key = lambda x : x[0])
     # print(FPTable)
 
-    miningConditionalFPTree(FPTable, min_sup)
+    createConditionalFPTree(FPTable, min_sup)
 
     generateFrequentPatterns(FPTable)
     print("\n\nPattern Generation Table")
     print(tabulate(FPTable, headers="firstrow", tablefmt='outline'))
-
 
 if __name__ == '__main__':
     main()
